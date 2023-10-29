@@ -1,5 +1,5 @@
-function GameBoard() {
-    const createBoard = (dim = 3) => {
+function GameBoard(dim) {
+    const createBoard = (dim) => {
         const board = [];
         for (let i = 0; i < dim; i++) {
             board[i] = [];
@@ -10,9 +10,9 @@ function GameBoard() {
         return board;
     }
    
-    const dim = 3;
     const board = createBoard(dim);
     
+    const getDim = () => dim;
     const getBoard = () => board;
     const isCellEmpty = (x,y) => board[x][y].isEmpty();
     const setMark = (x, y, player) => {
@@ -79,7 +79,7 @@ function GameBoard() {
         }
         console.log(print);
     }
-    return {getBoard, isCellEmpty, setMark, printBoard, checkWin};
+    return {getBoard, isCellEmpty, setMark, printBoard, checkWin, getDim};
 };
 
 function Cell() {
@@ -96,7 +96,7 @@ function Cell() {
     return {isEmpty, setMark, getMark};
 }
 
-function GameController(player1Name = "Player One", player2Name = "Player Two") {
+function GameController(player1Name = "Player One", player2Name = "Player Two", dim) {
     let players = [
         {
             name: player1Name,
@@ -108,7 +108,7 @@ function GameController(player1Name = "Player One", player2Name = "Player Two") 
         }
     ];
     let currentPlayer = players[0];
-    let gameBoard = GameBoard();
+    let gameBoard = GameBoard(dim);
     
     const switchTurns = () => {
         currentPlayer = currentPlayer === players[0] ? players[1] : players[0];
@@ -139,4 +139,40 @@ function GameController(player1Name = "Player One", player2Name = "Player Two") 
     return {playRound, getCurrentPlayer};
 }
 
-let game = GameController();
+function ScreenController() {
+    const dim = 4;
+    const game = GameController(undefined, undefined, dim);
+    const boardDiv = document.querySelector("div.game-board");
+
+    const updateScreen =  () => {
+        // Update root variable
+        const root = document.querySelector(":root");
+        root.style.setProperty('--dim', dim);
+
+        // Add buttons
+        for (let i = 0; i < dim*dim; i++) {
+            const button = document.createElement("button");
+            button.classList.add("cell");
+            button.textContent = "X";
+            boardDiv.appendChild(button);
+        }
+
+        // Add seperator divs
+        for (let i = 0; i < dim-1; i++) {
+            const borderHoriz = document.createElement("div");
+            borderHoriz.classList.add("border", "horizontal");
+            borderHoriz.style.cssText += `grid-row: ${i*2+2} / ${i*2+3}`;
+
+            const borderVert = document.createElement("div");
+            borderVert.classList.add("border", "vertical");
+            borderVert.style.cssText += `grid-column: ${i*2+2} / ${i*2+3}`;
+
+            boardDiv.appendChild(borderHoriz);
+            boardDiv.appendChild(borderVert);
+        }
+    }
+
+    updateScreen();
+}
+
+ScreenController();

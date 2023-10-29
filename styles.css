@@ -1,5 +1,29 @@
+:root {
+  --dim: 3;
+}
+
 body {
   background-color: white;
+}
+
+div.game-board {
+  display: grid;
+  grid-template-columns: repeat(calc(var(--dim) - 1), 1fr min-content) 1fr;
+  grid-template-rows: repeat(calc(var(--dim) - 1), 1fr min-content) 1fr;
+  height: 400px;
+  aspect-ratio: 1;
+  background-color: azure;
+  transition-duration: 1s;
+}
+div.game-board div.border.horizontal {
+  grid-column: 1/-1;
+  background-color: blue;
+  height: 10px;
+}
+div.game-board div.border.vertical {
+  grid-row: 1/-1;
+  background-color: blue;
+  width: 10px;
 }
 
 /*# sourceMappingURL=styles.css.map */
