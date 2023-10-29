@@ -56,11 +56,11 @@ function GameBoard(dim) {
         if (cellsFilled === dim * dim) {return "tie"};
 
         for (let i = 0; i < dim; i++) {
-            if (checkLine(i,0,0,1,dim)) return "won";
-            if (checkLine(0,i,1,0,dim)) return "won";
+            if (checkLine(i,0,0,1,dim)) return "win";
+            if (checkLine(0,i,1,0,dim)) return "win";
         }
-        if (checkLine(0,0,1,1,dim)) return "won";
-        if (checkLine(dim-1,dim-1,-1,-1,dim)) return "won";
+        if (checkLine(0,0,1,1,dim)) return "win";
+        if (checkLine(dim-1,dim-1,-1,-1,dim)) return "win";
         return false;
     }
     const printBoard = () => {
@@ -136,7 +136,10 @@ function GameController(player1Name = "Player One", player2Name = "Player Two", 
     const getCurrentPlayer = () => currentPlayer.name;
 
     gameBoard.printBoard();
-    return {playRound, getCurrentPlayer};
+    return {playRound, 
+        getCurrentPlayer,
+        getBoard: gameBoard.getBoard
+    };
 }
 
 function ScreenController() {
@@ -144,17 +147,21 @@ function ScreenController() {
     const game = GameController(undefined, undefined, dim);
     const boardDiv = document.querySelector("div.game-board");
 
-    const updateScreen =  () => {
+    const updateScreen = () => {
         // Update root variable
         const root = document.querySelector(":root");
         root.style.setProperty('--dim', dim);
 
         // Add buttons
-        for (let i = 0; i < dim*dim; i++) {
-            const button = document.createElement("button");
-            button.classList.add("cell");
-            button.textContent = "X";
-            boardDiv.appendChild(button);
+        for (let i = 0; i < dim; i++) {
+            for (let j = 0; j < dim; j++) {
+                const button = document.createElement("button");
+                button.classList.add("cell");
+                button.dataset.row = i;
+                button.dataset.column = j;
+                button.textContent = " ";
+                boardDiv.appendChild(button);
+            }
         }
 
         // Add seperator divs
@@ -172,6 +179,20 @@ function ScreenController() {
         }
     }
 
+    const makeClickable = () => {
+        boardDiv.addEventListener("click", (e) => {
+            if (!e.target.classList.contains("cell")) return;
+            
+            const xClick = e.target.getAttribute('data-row');
+            const yClick = e.target.getAttribute('data-column');
+            game.playRound(xClick, yClick);
+
+            const cell = (game.getBoard())[xClick][yClick];
+            e.target.textContent = cell.getMark();
+        })
+    }
+
+    makeClickable();
     updateScreen();
 }
 
