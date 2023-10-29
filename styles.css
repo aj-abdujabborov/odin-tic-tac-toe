@@ -1,7 +1,8 @@
 @import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,700;1,100;1,300&display=swap");
 :root {
   --dim: 3;
-  --border-color: #f72585;
+  --border-color: #f72584e0;
+  --border-shadow: #f7258456;
   --board-background: #4361EE;
   --shadow-color: #4362ee77;
   --body-background: #4CC9F0;
@@ -35,11 +36,21 @@ div.container div.current-player {
   grid-column: 1/2;
   display: flex;
   align-items: center;
-  justify-content: start;
 }
 div.container div.current-player span {
   font-size: 18px;
   margin-left: 5px;
+}
+div.container div.current-player .win {
+  color: #FFF3B0;
+  margin-left: 35px;
+  transform: scale(1.4);
+  transition-duration: 0.4s;
+}
+div.container div.current-player .tie {
+  color: #E09F3E;
+  transform: scale(1.4);
+  transition-duration: 0.4s;
 }
 div.container img.icon {
   height: 30px;
@@ -64,6 +75,7 @@ div.game-board {
 div.game-board div.border {
   border-radius: 10px;
   background-color: var(--border-color);
+  box-shadow: 10px 10px 20px var(--border-shadow);
 }
 div.game-board div.border.horizontal {
   grid-column: 1/-1;
@@ -76,12 +88,28 @@ div.game-board div.border.vertical {
 
 button.cell {
   border: none;
-  margin: 5px;
+  margin: 10px;
   background-color: transparent;
+  transition-duration: 0.15s;
+  border-radius: 20px;
+}
+button.cell:not([style^="background-image:"]):hover {
+  background-color: rgba(0, 0, 0, 0.0431372549);
+  transition-duration: 0.15s;
+  cursor: pointer;
 }
 
 .hidden {
   display: none;
+}
+
+.clickable {
+  transition-duration: 0.2s;
+}
+.clickable:hover {
+  transform: scale(1.1);
+  transition-duration: 0.2s;
+  cursor: pointer;
 }
 
 /*# sourceMappingURL=styles.css.map */

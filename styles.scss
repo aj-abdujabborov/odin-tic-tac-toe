@@ -2,7 +2,8 @@
 
 :root {
     --dim: 3;
-    --border-color: #f72585;
+    --border-color: #f72584e0;
+    --border-shadow: #f7258456;
     --board-background: #4361EE;
     --shadow-color: #4362ee77;
     --body-background: #4CC9F0;
@@ -38,11 +39,21 @@ div.container {
         
         display: flex;
         align-items: center;
-        justify-content: start;
 
         span {
             font-size: 18px;
             margin-left: 5px;
+        }
+        .win {
+            color: #FFF3B0;
+            margin-left: 35px;
+            transform: scale(1.4);
+            transition-duration: 0.4s;
+        }
+        .tie {
+            color: #E09F3E;
+            transform: scale(1.4);
+            transition-duration: 0.4s;
         }
     }
     img.icon {
@@ -72,6 +83,7 @@ div.game-board {
     div.border {
         border-radius: 10px;
         background-color: var(--border-color);
+        box-shadow: 10px 10px 20px var(--border-shadow);
     }
 
     div.border.horizontal {
@@ -87,10 +99,28 @@ div.game-board {
 
 button.cell {
     border: none;
-    margin: 5px;
+    margin: 10px;
     background-color: transparent;
+    transition-duration: 0.15s;
+    border-radius: 20px;
+
+    &:not([style^="background-image:"]):hover {
+        background-color: #0000000b;
+        transition-duration: 0.15s;
+        cursor: pointer;
+    }
 }
 
 .hidden {
     display: none;
+}
+
+.clickable {
+    transition-duration: 0.2s;
+
+    &:hover {
+        transform: scale(1.1);
+        transition-duration: 0.2s;
+        cursor: pointer;
+    }
 }

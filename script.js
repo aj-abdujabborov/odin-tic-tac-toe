@@ -168,12 +168,6 @@ function ScreenController(player1Name = "Player One", player2Name = "Player Two"
         }
     }
 
-    const updateCurrentPlayerName = () => {
-        const ID = game.getCurrentPlayer();
-        currPlayerImg.setAttribute("src", players[ID].icon);
-        currPlayerName.innerText = players[ID].name;
-    }
-
     const isGameOver = () => game.gameOutcome() !== "going";
 
     const setGameOver = () => {
@@ -182,11 +176,21 @@ function ScreenController(player1Name = "Player One", player2Name = "Player Two"
         if (outcome === "tie") {
             currPlayerImg.classList.add("hidden");
             currPlayerName.innerText = "IT'S A TIE!";
+            currPlayerName.classList.add("tie");
         }
         else {
             const ID = game.getCurrentPlayer();
             currPlayerName.innerText = `${players[ID].name} WINS!`;
+            currPlayerName.classList.add("win");
         }
+    }
+
+    const updateCurrentPlayerName = () => {
+        const ID = game.getCurrentPlayer();
+        currPlayerImg.setAttribute("src", players[ID].icon);
+        currPlayerImg.classList.remove("hidden");
+        currPlayerName.innerText = players[ID].name;
+        currPlayerName.classList.remove("win", "tie");
     }
 
     const makeClickable = () => {
@@ -217,7 +221,7 @@ function ScreenController(player1Name = "Player One", player2Name = "Player Two"
 
     const makeResetButtonClickable = () => {
         resetButton.addEventListener("click", () => {
-            resetGame();
+            resetGame(3);
         })
     }
 
