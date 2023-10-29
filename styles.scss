@@ -2,8 +2,8 @@
 
 :root {
     --dim: 3;
-    --border-color: #f72584e0;
-    --border-shadow: #f7258456;
+    --border-color: #d9ced7;
+    --border-shadow: #d9ced719;
     --board-background: #4361EE;
     --shadow-color: #4362ee77;
     --body-background: #4CC9F0;
@@ -12,6 +12,7 @@
 html {
     font-family: Lato, sans-serif, system-ui;
     font-weight: 700;
+    color: white;
 }
 
 body {
@@ -44,16 +45,16 @@ div.container {
             font-size: 18px;
             margin-left: 5px;
         }
-        .win {
-            color: #FFF3B0;
+        .win, .tie {
             margin-left: 35px;
             transform: scale(1.4);
             transition-duration: 0.4s;
         }
+        .win {
+            color: #FFF3B0;
+        }
         .tie {
             color: #E09F3E;
-            transform: scale(1.4);
-            transition-duration: 0.4s;
         }
     }
     img.icon {

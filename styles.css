@@ -1,8 +1,8 @@
 @import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,700;1,100;1,300&display=swap");
 :root {
   --dim: 3;
-  --border-color: #f72584e0;
-  --border-shadow: #f7258456;
+  --border-color: #d9ced7;
+  --border-shadow: #d9ced719;
   --board-background: #4361EE;
   --shadow-color: #4362ee77;
   --body-background: #4CC9F0;
@@ -11,6 +11,7 @@
 html {
   font-family: Lato, sans-serif, system-ui;
   font-weight: 700;
+  color: white;
 }
 
 body {
@@ -41,16 +42,16 @@ div.container div.current-player span {
   font-size: 18px;
   margin-left: 5px;
 }
-div.container div.current-player .win {
-  color: #FFF3B0;
+div.container div.current-player .win, div.container div.current-player .tie {
   margin-left: 35px;
   transform: scale(1.4);
   transition-duration: 0.4s;
 }
+div.container div.current-player .win {
+  color: #FFF3B0;
+}
 div.container div.current-player .tie {
   color: #E09F3E;
-  transform: scale(1.4);
-  transition-duration: 0.4s;
 }
 div.container img.icon {
   height: 30px;
