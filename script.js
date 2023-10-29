@@ -56,24 +56,22 @@ function GameBoard(dim) {
         }
     }
     const checkWin = () => {
-        let cellsFilled = 0;
-        for (let i = 0; i < dim; i++) {
-            for (let j = 0; j < dim; j++) {
-                if (board[i][j].isEmpty()) {
-                    continue;
-                }
-                else {cellsFilled++}
-            }
-        }
-        if (cellsFilled === dim * dim) {return "tie"};
-
         for (let i = 0; i < dim; i++) {
             if (checkLine(i,0,0,1,dim)) return "win";
             if (checkLine(0,i,1,0,dim)) return "win";
         }
         if (checkLine(0,0,1,1,dim)) return "win";
-        if (checkLine(dim-1,dim-1,-1,-1,dim)) return "win";
-        return "going";
+        if (checkLine(dim-1,0,-1,1,dim)) return "win";
+
+        for (let i = 0; i < dim; i++) {
+            for (let j = 0; j < dim; j++) {
+                if (board[i][j].isEmpty()) {
+                    return "going";
+                }
+            }
+        }
+
+        return "tie";
     }
 
     const printBoard = () => {
@@ -104,22 +102,17 @@ function GameController(dim) {
     const switchTurns = () => {
         currentPlayer = currentPlayer === 1 ? 2 : 1;
     }
-
     const gameOutcome = () => {
         const gameState = gameBoard.checkWin();
         return gameState;
     }
-
     const playRound = (x,y) => {
-        if (!gameBoard.setMark(x,y,currentPlayer)) return;
-
+        if (!gameBoard.setMark(x,y,currentPlayer)) return
         if (gameOutcome() === "going") {
             switchTurns();
         }
-        
         gameBoard.printBoard();
     }
-
     const getCurrentPlayer = () => currentPlayer;
 
     return {playRound, getCurrentPlayer, gameOutcome, gameBoard};
@@ -181,6 +174,21 @@ function ScreenController(player1Name = "Player One", player2Name = "Player Two"
         currPlayerName.innerText = players[ID].name;
     }
 
+    const isGameOver = () => game.gameOutcome() !== "going";
+
+    const setGameOver = () => {
+        const outcome = game.gameOutcome();
+        
+        if (outcome === "tie") {
+            currPlayerImg.classList.add("hidden");
+            currPlayerName.innerText = "IT'S A TIE!";
+        }
+        else {
+            const ID = game.getCurrentPlayer();
+            currPlayerName.innerText = `${players[ID].name} WINS!`;
+        }
+    }
+
     const makeClickable = () => {
         boardDiv.addEventListener("click", (e) => {
             if (!e.target.classList.contains("cell")) return;
@@ -191,10 +199,11 @@ function ScreenController(player1Name = "Player One", player2Name = "Player Two"
             const xClick = e.target.getAttribute('data-row');
             const yClick = e.target.getAttribute('data-column');
             game.playRound(xClick, yClick);
-            updateCurrentPlayerName();
-
             const mark = game.gameBoard.getMark(xClick, yClick);
             e.target.style.cssText += `background-image: url(${players[mark].icon})`;
+
+            if (isGameOver()) setGameOver();
+            else updateCurrentPlayerName();
         })
     }
 
