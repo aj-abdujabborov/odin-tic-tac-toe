@@ -1,3 +1,7 @@
+const GAME_WON = 0;
+const GAME_TIE = 1;
+const GAME_GOING = 2;
+
 function Cell() {
     let value = 0;
     const isEmpty = () => {
@@ -11,7 +15,6 @@ function Cell() {
     }
     return {isEmpty, setMark, getMark};
 }
-
 
 function GameBoard(dim) {
     const board = [];
@@ -27,9 +30,7 @@ function GameBoard(dim) {
     const setMark = (x, y, player) => {
         if (isCellEmpty(x,y)) {
             board[x][y].setMark(player);
-            return true;
         }
-        return false;
     }
 
     const checkLine = (posX, posY, dirX = 1, dirY = 1, length = dim) => {
@@ -57,21 +58,20 @@ function GameBoard(dim) {
     }
     const checkWin = () => {
         for (let i = 0; i < dim; i++) {
-            if (checkLine(i,0,0,1,dim)) return "win";
-            if (checkLine(0,i,1,0,dim)) return "win";
+            if (checkLine(i,0,0,1,dim)) return GAME_WON;
+            if (checkLine(0,i,1,0,dim)) return GAME_WON;
         }
-        if (checkLine(0,0,1,1,dim)) return "win";
-        if (checkLine(dim-1,0,-1,1,dim)) return "win";
+        if (checkLine(0,0,1,1,dim)) return GAME_WON;
+        if (checkLine(dim-1,0,-1,1,dim)) return GAME_WON;
 
         for (let i = 0; i < dim; i++) {
             for (let j = 0; j < dim; j++) {
                 if (board[i][j].isEmpty()) {
-                    return "going";
+                    return GAME_GOING;
                 }
             }
         }
-
-        return "tie";
+        return GAME_TIE;
     }
 
     const printBoard = () => {
@@ -102,24 +102,21 @@ function GameController(dim) {
     const switchTurns = () => {
         currentPlayer = currentPlayer === 1 ? 2 : 1;
     }
-    const gameOutcome = () => {
-        const gameState = gameBoard.checkWin();
-        return gameState;
-    }
+
     const playRound = (x,y) => {
-        if (!gameBoard.setMark(x,y,currentPlayer)) return
-        if (gameOutcome() === "going") {
-            switchTurns();
+        if (gameBoard.checkWin() === GAME_GOING) {
+            gameBoard.setMark(x,y,currentPlayer);
+            if (gameBoard.getMark(x,y) === currentPlayer) switchTurns();
         }
-        gameBoard.printBoard();
+        return;
     }
     const getCurrentPlayer = () => currentPlayer;
 
-    return {playRound, getCurrentPlayer, gameOutcome, gameBoard};
+    return {playRound, getCurrentPlayer, gameBoard};
 }
 
-function ScreenController(player1Name = "Player One", player2Name = "Player Two") {
-    let game, dim;
+const ScreenController = (function () {
+    let gameController, dim;
     const boardDiv = document.querySelector("div.game-board");
     const currPlayerImg = document.querySelector("div.current-player img.current-player");
     const currPlayerName = document.querySelector("div.current-player span.current-player");
@@ -127,21 +124,27 @@ function ScreenController(player1Name = "Player One", player2Name = "Player Two"
 
     let players = {
         1: {
-            name: player1Name,
+            name: "Player One",
             icon: "./assets/food-drumstick.svg",
         },
         2: {
-            name: player2Name,
+            name: "Player Two",
             icon: "./assets/glass-mug-variant.svg",
         }
     };
 
-    const createScreen = () => {
-        // Update root variable
+    const resetGame = (d) => {
+        boardDiv.innerText = "";
+        dim = d;
+        gameController = GameController(dim);
+        renderEmptyBoard();
+        renderCurrentPlayerName();
+    }
+
+    const renderEmptyBoard = () => {
         const root = document.querySelector(":root");
         root.style.setProperty('--dim', dim);
 
-        // Add buttons
         for (let i = 0; i < dim; i++) {
             for (let j = 0; j < dim; j++) {
                 const button = document.createElement("button");
@@ -153,7 +156,6 @@ function ScreenController(player1Name = "Player One", player2Name = "Player Two"
             }
         }
 
-        // Add seperator divs
         for (let i = 0; i < dim-1; i++) {
             const borderHoriz = document.createElement("div");
             borderHoriz.classList.add("border", "horizontal");
@@ -168,55 +170,47 @@ function ScreenController(player1Name = "Player One", player2Name = "Player Two"
         }
     }
 
-    const isGameOver = () => game.gameOutcome() !== "going";
+    const getGameState = () => gameController.gameBoard.checkWin();
 
-    const setGameOver = () => {
-        const outcome = game.gameOutcome();
+    const renderGameOver = () => {
+        const outcome = getGameState();
         
-        if (outcome === "tie") {
+        if (outcome === GAME_TIE) {
             currPlayerImg.classList.add("hidden");
             currPlayerName.innerText = "IT'S A TIE!";
             currPlayerName.classList.add("tie");
         }
         else {
-            const ID = game.getCurrentPlayer();
+            const ID = gameController.getCurrentPlayer();
             currPlayerName.innerText = `${players[ID].name} WINS!`;
             currPlayerName.classList.add("win");
         }
     }
 
-    const updateCurrentPlayerName = () => {
-        const ID = game.getCurrentPlayer();
+    const renderCurrentPlayerName = () => {
+        const ID = gameController.getCurrentPlayer();
         currPlayerImg.setAttribute("src", players[ID].icon);
         currPlayerImg.classList.remove("hidden");
         currPlayerName.innerText = players[ID].name;
         currPlayerName.classList.remove("win", "tie");
     }
 
-    const makeClickable = () => {
+    const makeBoardClickable = () => {
         boardDiv.addEventListener("click", (e) => {
             if (!e.target.classList.contains("cell")) return;
-            if (game.gameOutcome() !== "going") {
-                return;
-            }
             
             const xClick = e.target.getAttribute('data-row');
             const yClick = e.target.getAttribute('data-column');
-            game.playRound(xClick, yClick);
-            const mark = game.gameBoard.getMark(xClick, yClick);
-            e.target.style.cssText += `background-image: url(${players[mark].icon})`;
+            gameController.playRound(xClick, yClick);
 
-            if (isGameOver()) setGameOver();
-            else updateCurrentPlayerName();
+            const mark = gameController.gameBoard.getMark(xClick, yClick);
+            if (mark) {
+                e.target.style.cssText += `background-image: url(${players[mark].icon})`;
+            }
+
+            if (getGameState() !== GAME_GOING) renderGameOver();
+            else renderCurrentPlayerName();
         })
-    }
-
-    const resetGame = (d) => {
-        boardDiv.innerText = "";
-        dim = d;
-        game = GameController(dim);
-        createScreen();
-        updateCurrentPlayerName();
     }
 
     const makeResetButtonClickable = () => {
@@ -227,7 +221,5 @@ function ScreenController(player1Name = "Player One", player2Name = "Player Two"
 
     resetGame(3);
     makeResetButtonClickable();
-    makeClickable();
-}
-
-ScreenController();
+    makeBoardClickable();
+})();
