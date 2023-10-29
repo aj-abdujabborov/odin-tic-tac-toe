@@ -129,6 +129,9 @@ function ScreenController(player1Name = "Player One", player2Name = "Player Two"
     const dim = 3;
     const game = GameController(dim);
     const boardDiv = document.querySelector("div.game-board");
+    const currPlayerImg = document.querySelector("div.current-player img.current-player");
+    const currPlayerName = document.querySelector("div.current-player span.current-player");
+
     let players = {
         1: {
             name: player1Name,
@@ -172,20 +175,31 @@ function ScreenController(player1Name = "Player One", player2Name = "Player Two"
         }
     }
 
+    const updateCurrentPlayerName = () => {
+        const ID = game.getCurrentPlayer();
+        currPlayerImg.setAttribute("src", players[ID].icon);
+        currPlayerName.innerText = players[ID].name;
+    }
+
     const makeClickable = () => {
         boardDiv.addEventListener("click", (e) => {
             if (!e.target.classList.contains("cell")) return;
+            if (game.gameOutcome() !== "going") {
+                return;
+            }
             
             const xClick = e.target.getAttribute('data-row');
             const yClick = e.target.getAttribute('data-column');
             game.playRound(xClick, yClick);
+            updateCurrentPlayerName();
 
-            const mark = game.gameBoard.getMark(xClick, yClick).toString();
+            const mark = game.gameBoard.getMark(xClick, yClick);
             e.target.style.cssText += `background-image: url(${players[mark].icon})`;
         })
     }
 
     createScreen();
+    updateCurrentPlayerName();
     makeClickable();
 }
 

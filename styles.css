@@ -1,9 +1,15 @@
+@import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,700;1,100;1,300&display=swap");
 :root {
   --dim: 3;
   --border-color: #f72585;
   --board-background: #4361EE;
   --shadow-color: #4362ee77;
   --body-background: #4CC9F0;
+}
+
+html {
+  font-family: Lato, sans-serif, system-ui;
+  font-weight: 700;
 }
 
 body {
@@ -15,17 +21,39 @@ body {
 }
 
 div.container {
-  display: flex;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: 1fr min-content min-content;
+  grid-template-rows: min-content 1fr;
   align-items: center;
   padding: 20px;
-  padding-top: 80px;
   background-color: var(--board-background);
   box-shadow: 10px 10px 20px var(--shadow-color);
   border-radius: 20px;
 }
+div.container div.current-player {
+  grid-column: 1/2;
+  display: flex;
+  align-items: center;
+  justify-content: start;
+}
+div.container div.current-player span {
+  font-size: 18px;
+  margin-left: 5px;
+}
+div.container img.icon {
+  height: 30px;
+  width: 30px;
+}
+div.container img.reset.icon {
+  grid-column: 2/3;
+  margin-right: 5px;
+}
+div.container img.settings.icon {
+  grid-column: 3/4;
+}
 
 div.game-board {
+  grid-column: 1/-1;
   display: grid;
   grid-template-columns: repeat(calc(var(--dim) - 1), 1fr min-content) 1fr;
   grid-template-rows: repeat(calc(var(--dim) - 1), 1fr min-content) 1fr;
