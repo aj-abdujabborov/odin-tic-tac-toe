@@ -1,25 +1,37 @@
-function GameBoard(dim) {
-    const createBoard = (dim) => {
-        const board = [];
-        for (let i = 0; i < dim; i++) {
-            board[i] = [];
-            for (let j = 0; j < dim; j++) {
-                board[i].push(Cell());
-            }
-        }
-        return board;
+function Cell() {
+    let value = 0;
+    const isEmpty = () => {
+        return value === 0;
     }
-   
-    const board = createBoard(dim);
+    const setMark = (mark) => {
+        value = mark;
+    }
+    const getMark = () => {
+        return value;
+    }
+    return {isEmpty, setMark, getMark};
+}
+
+
+function GameBoard(dim) {
+    const board = [];
+    for (let i = 0; i < dim; i++) {
+        board[i] = [];
+        for (let j = 0; j < dim; j++) {
+            board[i].push(Cell());
+        }
+    }
     
-    const getDim = () => dim;
-    const getBoard = () => board;
     const isCellEmpty = (x,y) => board[x][y].isEmpty();
+    const getMark = (x,y) => board[x][y].getMark();
     const setMark = (x, y, player) => {
         if (isCellEmpty(x,y)) {
             board[x][y].setMark(player);
+            return true;
         }
+        return false;
     }
+
     const checkLine = (posX, posY, dirX = 1, dirY = 1, length = dim) => {
         dirX = dirX > 0 ? 1 : (dirX < 0 ? -1 : 0);
         dirY = dirY > 0 ? 1 : (dirY < 0 ? -1 : 0);
@@ -61,8 +73,9 @@ function GameBoard(dim) {
         }
         if (checkLine(0,0,1,1,dim)) return "win";
         if (checkLine(dim-1,dim-1,-1,-1,dim)) return "win";
-        return false;
+        return "going";
     }
+
     const printBoard = () => {
         let print = "";
         for (let i = 0; i < dim; i++) {
@@ -79,75 +92,55 @@ function GameBoard(dim) {
         }
         console.log(print);
     }
-    return {getBoard, isCellEmpty, setMark, printBoard, checkWin, getDim};
+
+    return {getMark, setMark, isCellEmpty, checkWin, printBoard};
 };
 
-function Cell() {
-    let value = 0;
-    const isEmpty = () => {
-        return value === 0;
-    }
-    const setMark = (mark) => {
-        value = mark;
-    }
-    const getMark = () => {
-        return value;
-    }
-    return {isEmpty, setMark, getMark};
-}
 
-function GameController(player1Name = "Player One", player2Name = "Player Two", dim) {
-    let players = [
-        {
-            name: player1Name,
-            mark: 'X'
-        },
-        {
-            name: player2Name,
-            mark: 'O'
-        }
-    ];
-    let currentPlayer = players[0];
-    let gameBoard = GameBoard(dim);
+function GameController(dim) {
+    let currentPlayer = 1;
+    const gameBoard = GameBoard(dim);
     
     const switchTurns = () => {
-        currentPlayer = currentPlayer === players[0] ? players[1] : players[0];
+        currentPlayer = currentPlayer === 1 ? 2 : 1;
+    }
+
+    const gameOutcome = () => {
+        const gameState = gameBoard.checkWin();
+        return gameState;
     }
 
     const playRound = (x,y) => {
-        if (!gameBoard.isCellEmpty(x,y)) {
-            console.log('This cell is taken. Try a different one.');
-            return;
+        if (!gameBoard.setMark(x,y,currentPlayer)) return;
+
+        if (gameOutcome() === "going") {
+            switchTurns();
         }
-        gameBoard.setMark(x,y,currentPlayer.mark);
+        
         gameBoard.printBoard();
-
-        let gameState = gameBoard.checkWin();
-        if (gameState === "win") {
-            console.log(`${currentPlayer.name} wins the game!`);
-        }
-        else if (gameState === "tie") {
-            console.log(`The game is tied!`);
-        }
-
-        switchTurns();
     }
 
-    const getCurrentPlayer = () => currentPlayer.name;
+    const getCurrentPlayer = () => currentPlayer;
 
-    gameBoard.printBoard();
-    return {playRound, 
-        getCurrentPlayer,
-        getBoard: gameBoard.getBoard
-    };
+    return {playRound, getCurrentPlayer, gameOutcome, gameBoard};
 }
 
-function ScreenController() {
-    const dim = 4;
-    const game = GameController(undefined, undefined, dim);
+function ScreenController(player1Name = "Player One", player2Name = "Player Two") {
+    const dim = 3;
+    const game = GameController(dim);
     const boardDiv = document.querySelector("div.game-board");
+    let players = {
+        1: {
+            name: player1Name,
+            icon: "./assets/food-drumstick.svg",
+        },
+        2: {
+            name: player2Name,
+            icon: "./assets/glass-mug-variant.svg",
+        }
+    };
 
-    const updateScreen = () => {
+    const createScreen = () => {
         // Update root variable
         const root = document.querySelector(":root");
         root.style.setProperty('--dim', dim);
@@ -187,13 +180,13 @@ function ScreenController() {
             const yClick = e.target.getAttribute('data-column');
             game.playRound(xClick, yClick);
 
-            const cell = (game.getBoard())[xClick][yClick];
-            e.target.textContent = cell.getMark();
+            const mark = game.gameBoard.getMark(xClick, yClick).toString();
+            e.target.style.cssText += `background-image: url(${players[mark].icon})`;
         })
     }
 
+    createScreen();
     makeClickable();
-    updateScreen();
 }
 
 ScreenController();
