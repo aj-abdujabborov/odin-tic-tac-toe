@@ -1,9 +1,28 @@
 :root {
     --dim: 3;
+    --border-color: #f72585;
+    --board-background: #4361EE;
+    --shadow-color: #4362ee77;
+    --body-background: #4CC9F0;
 }
 
 body {
-    background-color: white;
+    background-color: var(--body-background);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+div.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    padding-top: 80px;
+    background-color: var(--board-background);
+    box-shadow: 10px 10px 20px var(--shadow-color);
+    border-radius: 20px;
 }
 
 div.game-board {
@@ -14,18 +33,26 @@ div.game-board {
 
     height: 400px;
     aspect-ratio: 1;
-    background-color: azure;
-    transition-duration: 1s;
+    
+    div.border {
+        border-radius: 10px;
+        background-color: var(--border-color);
+    }
 
     div.border.horizontal {
         grid-column: 1 / -1;
-        background-color: blue;
         height: 10px;
     }
 
     div.border.vertical {
         grid-row: 1 / -1;
-        background-color: blue;
         width: 10px;
     }
 }
+
+button.cell {
+    border: none;
+    margin: 5px;
+    background-color: transparent;
+}
+
