@@ -119,11 +119,11 @@ function GameController(dim) {
 }
 
 function ScreenController(player1Name = "Player One", player2Name = "Player Two") {
-    const dim = 3;
-    const game = GameController(dim);
+    let game, dim;
     const boardDiv = document.querySelector("div.game-board");
     const currPlayerImg = document.querySelector("div.current-player img.current-player");
     const currPlayerName = document.querySelector("div.current-player span.current-player");
+    const resetButton = document.querySelector("div.container img.reset.icon");
 
     let players = {
         1: {
@@ -207,8 +207,22 @@ function ScreenController(player1Name = "Player One", player2Name = "Player Two"
         })
     }
 
-    createScreen();
-    updateCurrentPlayerName();
+    const resetGame = (d) => {
+        boardDiv.innerText = "";
+        dim = d;
+        game = GameController(dim);
+        createScreen();
+        updateCurrentPlayerName();
+    }
+
+    const makeResetButtonClickable = () => {
+        resetButton.addEventListener("click", () => {
+            resetGame();
+        })
+    }
+
+    resetGame(3);
+    makeResetButtonClickable();
     makeClickable();
 }
 
