@@ -106,7 +106,9 @@ function GameController(dim) {
     const playRound = (x,y) => {
         if (gameBoard.checkWin() === GAME_GOING) {
             gameBoard.setMark(x,y,currentPlayer);
-            if (gameBoard.getMark(x,y) === currentPlayer) switchTurns();
+            if (gameBoard.getMark(x,y) === currentPlayer && gameBoard.checkWin() === GAME_GOING) {
+                switchTurns();
+            } 
         }
         return;
     }
@@ -180,7 +182,7 @@ const ScreenController = (function () {
             currPlayerName.innerText = "IT'S A TIE!";
             currPlayerName.classList.add("tie");
         }
-        else {
+        else if (outcome === GAME_WON){
             const ID = gameController.getCurrentPlayer();
             currPlayerName.innerText = `${players[ID].name} WINS!`;
             currPlayerName.classList.add("win");
