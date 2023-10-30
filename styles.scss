@@ -2,19 +2,20 @@
 
 :root {
     --dim: 3;
-    --border-color: #d9ced7;
-    --border-shadow: #d9ced719;
+    --body-background: #241c1a;
+    --border-color: #241c1a;
+    --border-shadow: #241c1a47;
     --border-thickness: calc(30px * 1/var(--dim));
-    --board-background: #4361EE;
-    --shadow-color: #4362ee77;
-    --body-background: #4CC9F0;
     --border-radius: 20px;
+    --board-background: #FFE6D8;
+    --shadow-color: #56423d2f;
+    --front-text-color: #E93F1F;
+    --back-text-color: var(--body-background);
 }
 
 html {
     font-family: Lato, sans-serif, system-ui;
     font-weight: 700;
-    color: white;
 }
 
 body {
@@ -67,21 +68,18 @@ div.front, div.back {
     top: 5%;
 }
 
-// FRONT
-div.front-container {
+div.front-container, div.back-container {
     background-color: var(--board-background);
 }
 
-div.back-container {
-    background-color: rgb(175, 206, 21);
-}
-
+// FRONT
 div.front {
     display: grid;
     grid-template-columns: 1fr min-content min-content;
     grid-template-rows: min-content 1fr;
     row-gap: 10px;
     align-items: stretch;
+    color: var(--front-text-color);
     
     div.current-player {
         grid-column: 1 / 2;
@@ -97,12 +95,6 @@ div.front {
             margin-left: 35px;
             transform: scale(1.4);
             transition-duration: 0.4s;
-        }
-        .win {
-            color: #FFF3B0;
-        }
-        .tie {
-            color: #E09F3E;
         }
     }
     img.reset.icon {
@@ -145,7 +137,7 @@ div.game-board {
         background-repeat: no-repeat;
         transition-duration: 0.15s;
         border-radius: 20px;
-    
+
         &:not([style^="background-image:"]):hover {
             background-color: #0000000b;
             transition-duration: 0.15s;
@@ -189,12 +181,14 @@ div.back {
     row-gap: 15px;
     column-gap: 15px;
 
+    color: var(--back-text-color);
     font-size: 22px;
 
     input {
         font-size: inherit;
         font-family: inherit;
         font-weight: inherit;
+        color: var(--front-text-color);
         width: 100%;
         margin: 0;
         padding: 5px;
