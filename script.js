@@ -119,10 +119,13 @@ function GameController(dim) {
 
 const ScreenController = (function () {
     let gameController, dim;
+    const innerCard = document.querySelector("div.inner-card");
     const boardDiv = document.querySelector("div.game-board");
     const currPlayerImg = document.querySelector("div.current-player img.current-player");
     const currPlayerName = document.querySelector("div.current-player span.current-player");
-    const resetButton = document.querySelector("div.container img.reset.icon");
+    const resetButton = document.querySelector("div.front img.reset.icon");
+    const settingsButton = document.querySelector("div.front img.settings.icon");
+    const saveSettingsButton = document.querySelector("div.back button.save-settings");
 
     let players = {
         1: {
@@ -215,13 +218,19 @@ const ScreenController = (function () {
         })
     }
 
-    const makeResetButtonClickable = () => {
+    const makeButtonsClickable = () => {
         resetButton.addEventListener("click", () => {
             resetGame(3);
+        })
+        settingsButton.addEventListener("click", () => {
+            innerCard.classList.add("flip");
+        })
+        saveSettingsButton.addEventListener("click", () => {
+            innerCard.classList.remove("flip");
         })
     }
 
     resetGame(3);
-    makeResetButtonClickable();
+    makeButtonsClickable();
     makeBoardClickable();
 })();

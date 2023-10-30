@@ -8,14 +8,25 @@
     <script src="./script.js" defer></script>
 </head>
 <body>
-    <div class="container">
-        <div class="current-player">
-            <img class="current-player icon" src="./assets/food-drumstick.svg">
-            <span class="current-player">Player One</span>
+    <div class="outer-card">
+        <div class="inner-card">
+            <div class="front-container">
+                <div class="front">
+                    <div class="current-player">
+                        <img class="current-player icon" src="./assets/food-drumstick.svg">
+                        <span class="current-player">Player One</span>
+                    </div>
+                    <img class="reset icon clickable" src="./assets/restore.svg" alt="reset game">
+                    <img class="settings icon clickable" src="./assets/cog.svg" alt="settings">
+                    <div class="game-board"></div>
+                </div>
+            </div>
+            <div class="back-container">
+                <div class="back">
+                    <button class="save-settings">Save</button>
+                </div>
+            </div>
         </div>
-        <img class="reset icon clickable" src="./assets/restore.svg" alt="reset game">
-        <img class="settings icon clickable" src="./assets/cog.svg" alt="settings">
-        <div class="game-board"></div>
     </div>
 </body>
 </html>

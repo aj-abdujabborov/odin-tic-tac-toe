@@ -22,46 +22,89 @@ body {
   align-items: center;
 }
 
-div.container {
+div.outer-card {
+  background-color: transparent;
+  height: 400px;
+  aspect-ratio: 1;
+}
+
+div.inner-card, div.front-container, div.back-container {
+  width: 100%;
+  height: 100%;
+}
+
+div.inner-card {
+  position: relative;
+  transition: transform 0.8s;
+  transform-style: preserve-3d;
+}
+div.inner-card.flip {
+  transform: rotateY(180deg);
+}
+
+div.front-container, div.back-container {
+  position: absolute;
+  backface-visibility: hidden;
+  box-shadow: 10px 10px 20px var(--shadow-color);
+  border-radius: 20px;
+}
+
+div.back-container {
+  transform: rotateY(180deg);
+}
+
+div.front, div.back {
+  position: absolute;
+  width: 90%;
+  height: 90%;
+  left: 5%;
+  top: 5%;
+}
+
+div.front-container {
+  background-color: var(--board-background);
+}
+
+div.back-container {
+  background-color: yellow;
+}
+
+div.front {
   display: grid;
   grid-template-columns: 1fr min-content min-content;
   grid-template-rows: min-content 1fr;
   row-gap: 10px;
-  align-items: center;
-  padding: 20px;
-  background-color: var(--board-background);
-  box-shadow: 10px 10px 20px var(--shadow-color);
-  border-radius: 20px;
+  align-items: stretch;
 }
-div.container div.current-player {
+div.front div.current-player {
   grid-column: 1/2;
   display: flex;
   align-items: center;
 }
-div.container div.current-player span {
+div.front div.current-player span {
   font-size: 18px;
   margin-left: 5px;
 }
-div.container div.current-player .win, div.container div.current-player .tie {
+div.front div.current-player .win, div.front div.current-player .tie {
   margin-left: 35px;
   transform: scale(1.4);
   transition-duration: 0.4s;
 }
-div.container div.current-player .win {
+div.front div.current-player .win {
   color: #FFF3B0;
 }
-div.container div.current-player .tie {
+div.front div.current-player .tie {
   color: #E09F3E;
 }
-div.container img.icon {
+div.front img.icon {
   height: 30px;
   width: 30px;
 }
-div.container img.reset.icon {
+div.front img.reset.icon {
   grid-column: 2/3;
   margin-right: 5px;
 }
-div.container img.settings.icon {
+div.front img.settings.icon {
   grid-column: 3/4;
 }
 
@@ -70,8 +113,6 @@ div.game-board {
   display: grid;
   grid-template-columns: repeat(calc(var(--dim) - 1), 1fr min-content) 1fr;
   grid-template-rows: repeat(calc(var(--dim) - 1), 1fr min-content) 1fr;
-  height: 400px;
-  aspect-ratio: 1;
 }
 div.game-board div.border {
   border-radius: 10px;
@@ -91,6 +132,7 @@ button.cell {
   border: none;
   margin: 10px;
   background-color: transparent;
+  background-repeat: no-repeat;
   transition-duration: 0.15s;
   border-radius: 20px;
 }
@@ -100,10 +142,6 @@ button.cell:not([style^="background-image:"]):hover {
   cursor: pointer;
 }
 
-.hidden {
-  display: none;
-}
-
 .clickable {
   transition-duration: 0.2s;
 }
@@ -111,6 +149,10 @@ button.cell:not([style^="background-image:"]):hover {
   transform: scale(1.1);
   transition-duration: 0.2s;
   cursor: pointer;
+}
+
+.hidden {
+  display: none;
 }
 
 /*# sourceMappingURL=styles.css.map */
