@@ -118,22 +118,28 @@ function GameController(dim) {
 }
 
 const ScreenController = (function () {
-    let gameController, dim;
+    let gameController, dim, newDim;
+
     const innerCard = document.querySelector("div.inner-card");
     const boardDiv = document.querySelector("div.game-board");
     const currPlayerImg = document.querySelector("div.current-player img.current-player");
     const currPlayerName = document.querySelector("div.current-player span.current-player");
     const resetButton = document.querySelector("div.front img.reset.icon");
     const settingsButton = document.querySelector("div.front img.settings.icon");
-    const saveSettingsButton = document.querySelector("div.back button.save-settings");
+    const saveSettingsButton = document.querySelector("div.back button#save-settings");
+    const player1NameInput = document.querySelector("div.back input#player1-name");
+    const player2NameInput = document.querySelector("div.back input#player2-name");
+    const lengthMinusButton = document.querySelector("div.back button#grid-minus");
+    const lengthPlusButton = document.querySelector("div.back button#grid-plus");
+    const lengthOutput = document.querySelector("div.back div#dimensions output");
 
     let players = {
         1: {
-            name: "Player One",
+            name: "",
             icon: "./assets/food-drumstick.svg",
         },
         2: {
-            name: "Player Two",
+            name: "",
             icon: "./assets/glass-mug-variant.svg",
         }
     };
@@ -141,9 +147,12 @@ const ScreenController = (function () {
     const resetGame = (d) => {
         boardDiv.innerText = "";
         dim = d;
+        newDim = d;
         gameController = GameController(dim);
         renderEmptyBoard();
         renderCurrentPlayerName();
+        renderInputtedName();
+        renderLengthOutput();
     }
 
     const renderEmptyBoard = () => {
@@ -218,14 +227,42 @@ const ScreenController = (function () {
         })
     }
 
+    const renderInputtedName = () => {
+        players["1"].name = player1NameInput.value;
+        players["2"].name = player2NameInput.value;
+        renderCurrentPlayerName();
+    }
+
+    const renderLengthOutput = () => {
+        lengthOutput.value = newDim;
+    }
+
     const makeButtonsClickable = () => {
         resetButton.addEventListener("click", () => {
-            resetGame(3);
+            resetGame(dim);
         })
         settingsButton.addEventListener("click", () => {
             innerCard.classList.add("flip");
         })
-        saveSettingsButton.addEventListener("click", () => {
+        player1NameInput.addEventListener("input", ()=> {
+            renderInputtedName();
+        })
+        player2NameInput.addEventListener("input", ()=> {
+            renderInputtedName();
+        })
+        lengthMinusButton.addEventListener("click", ()=> {
+            newDim = Math.max(newDim-1, 2);
+            renderLengthOutput();
+        })
+        lengthPlusButton.addEventListener("click", ()=>{
+            newDim = Math.min(newDim+1, 6);
+            renderLengthOutput();
+
+        })
+        saveSettingsButton.addEventListener("click", ()=>{
+            if (dim !== newDim) {
+                resetGame(newDim);
+            }
             innerCard.classList.remove("flip");
         })
     }

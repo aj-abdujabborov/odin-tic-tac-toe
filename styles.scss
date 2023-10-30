@@ -4,6 +4,7 @@
     --dim: 3;
     --border-color: #d9ced7;
     --border-shadow: #d9ced719;
+    --border-thickness: calc(30px * 1/var(--dim));
     --board-background: #4361EE;
     --shadow-color: #4362ee77;
     --body-background: #4CC9F0;
@@ -65,13 +66,13 @@ div.front, div.back {
     top: 5%;
 }
 
-// Design
+// FRONT
 div.front-container {
     background-color: var(--board-background);
 }
 
 div.back-container {
-    background-color: yellow;
+    background-color: rgb(175, 206, 21);
 }
 
 div.front {
@@ -132,27 +133,27 @@ div.game-board {
 
     div.border.horizontal {
         grid-column: 1 / -1;
-        height: 10px;
+        height: var(--border-thickness);
     }
 
     div.border.vertical {
         grid-row: 1 / -1;
-        width: 10px;
+        width: var(--border-thickness);
     }
-}
 
-button.cell {
-    border: none;
-    margin: 10px;
-    background-color: transparent;
-    background-repeat: no-repeat;
-    transition-duration: 0.15s;
-    border-radius: 20px;
-
-    &:not([style^="background-image:"]):hover {
-        background-color: #0000000b;
+    button.cell {
+        border: none;
+        margin: 5%;
+        background-color: transparent;
+        background-repeat: no-repeat;
         transition-duration: 0.15s;
-        cursor: pointer;
+        border-radius: 20px;
+    
+        &:not([style^="background-image:"]):hover {
+            background-color: #0000000b;
+            transition-duration: 0.15s;
+            cursor: pointer;
+        }
     }
 }
 
@@ -170,6 +171,23 @@ button.cell {
     display: none;
 }
 
+// BACK
+div.back {
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    grid-template-rows: repeat(4, min-content) 1fr;
+
+    button#save-settings {
+        grid-column: 2 / 3;
+        justify-self: end;
+    }
+
+    div#dimensions {
+        output::before {
+            content: var(--text);
+        }
+    }
+}
 
 
 
